@@ -1,4 +1,5 @@
 ﻿@using JobFinder.WebApi.Views.Manage
+@using JobFinder.Models
 @inject SignInManager<ApplicationUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using JobFinder.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using JobFinder.WebApi.Models;
 
-namespace JobFinder.WebApi.Data
+namespace JobFinder.Repositories.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

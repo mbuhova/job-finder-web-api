@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using JobFinder.WebApi.Data;
-using JobFinder.WebApi.Models;
+using JobFinder.Models;
 using JobFinder.WebApi.Services;
+using JobFinder.Repositories.Data;
 
 namespace JobFinder.WebApi
 {

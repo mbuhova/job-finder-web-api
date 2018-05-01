@@ -1,10 +1,10 @@
-﻿namespace JobFinder.WebApi.Models
+﻿namespace JobFinder.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Town
+    public class Town : IEntity<int>
     {
         public Town()
         {

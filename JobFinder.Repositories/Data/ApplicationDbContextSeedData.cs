@@ -1,12 +1,11 @@
-﻿namespace JobFinder.WebApi.Data
+﻿namespace JobFinder.Repositories.Data
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using JobFinder.WebApi.Controllers;
-    using JobFinder.WebApi.Models;
+    using JobFinder.Models;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;

@@ -1,6 +1,6 @@
-﻿namespace JobFinder.WebApi.Models
+﻿namespace JobFinder.Models
 {
-    using JobFinder.WebApi.Models;
+    using JobFinder.Models;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;

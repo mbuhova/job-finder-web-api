@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using JobFinder.WebApi.Models;
 using JobFinder.WebApi.Models.AccountViewModels;
 using JobFinder.WebApi.Services;
+using JobFinder.Models;
 
 namespace JobFinder.WebApi.Controllers
 {

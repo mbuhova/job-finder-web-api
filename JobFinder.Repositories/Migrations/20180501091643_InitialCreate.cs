@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace JobFinder.WebApi.Migrations
+namespace JobFinder.Repositories.Migrations
 {
     public partial class InitialCreate : Migration
     {

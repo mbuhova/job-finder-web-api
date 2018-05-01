@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace JobFinder.WebApi.Models
+namespace JobFinder.Models
 {
-    public class Application
+    public class Application : IEntity<int>
     {
         [Key]
         public int Id { get; set; }

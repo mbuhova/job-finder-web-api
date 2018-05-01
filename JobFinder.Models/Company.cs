@@ -1,4 +1,4 @@
-﻿namespace JobFinder.WebApi.Models
+﻿namespace JobFinder.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;

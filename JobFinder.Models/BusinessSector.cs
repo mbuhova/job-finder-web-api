@@ -1,9 +1,9 @@
-﻿namespace JobFinder.WebApi.Models
+﻿namespace JobFinder.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    public class BusinessSector
+    public class BusinessSector : IEntity<int>
     {
         public BusinessSector()
         {
