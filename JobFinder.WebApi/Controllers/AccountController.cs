@@ -30,7 +30,7 @@ namespace JobFinder.WebApi.Controllers
         private readonly ILogger _logger;
         private IJwtFactory _jwtFactory;
         private readonly JwtIssuerOptions _jwtOptions;
-   
+
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -67,79 +67,48 @@ namespace JobFinder.WebApi.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody]LoginViewModel model, string returnUrl = null)
         {
-             ViewData["ReturnUrl"] = returnUrl;
-             if (ModelState.IsValid)
-             {
-                 // This doesn't count login failures towards account lockout
-                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                 if (result.Succeeded)
-                 {
-                     _logger.LogInformation("User logged in.");
-                     //return RedirectToLocal(returnUrl);
-                     //return Ok();
-                 }
-                /* if (result.RequiresTwoFactor)
-                 {
-                     return RedirectToAction(nameof(LoginWith2fa), new { returnUrl, model.RememberMe });
-                 }
-                 if (result.IsLockedOut)
-                 {
-                     _logger.LogWarning("User account locked out.");
-                     return RedirectToAction(nameof(Lockout));
-                 }
-                 else
-                 {
-                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                     return View(model);
-                 }*/
-        }
-
-                // If we got this far, something failed, redisplay form
-                //return View(model);
-                // return BadRequest(model);
-
-
-                if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var identity = await GetClaimsIdentity(model.Email, model.Password);
-            if (identity == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             
-            //JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            //var jwt = Tokens.CreateJwtSecurityToken(identity, _jwtFactory, model.Email, _jwtOptions, new JsonSerializerSettings { Formatting = Formatting.Indented });
-            //var jwt = handler.CreateJwtSecurityToken(_jwtOptions.Issuer, _jwtOptions.Audience, identity, _jwtOptions.NotBefore, _jwtOptions.Expiration, _jwtOptions.IssuedAt, _jwtOptions.SigningCredentials);
+            var identity = await GetClaimsIdentity(model.Email, model.Password);
+            if (identity == null)
+            {
+                return BadRequest("Invalid email or password!");
+            }
+            
             var token = await _jwtFactory.GenerateEncodedToken(model.Email, identity);
             return new OkObjectResult(token);
         }
-
-        // NEW ------------------------------------------------
+        
         private async Task<ClaimsIdentity> GetClaimsIdentity(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+            {
                 return await Task.FromResult<ClaimsIdentity>(null);
+            }
 
             // get the user to verifty
             var userToVerify = await _userManager.FindByNameAsync(userName);
 
-            if (userToVerify == null) return await Task.FromResult<ClaimsIdentity>(null);
+            if (userToVerify == null)
+            {
+                return await Task.FromResult<ClaimsIdentity>(null);
+            }
 
             // check the credentials
             if (await _userManager.CheckPasswordAsync(userToVerify, password))
             {
-                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id));
+                var roles = await _userManager.GetRolesAsync(userToVerify);
+                string role = roles.FirstOrDefault();
+
+                return await Task.FromResult(_jwtFactory.GenerateClaimsIdentity(userName, userToVerify.Id, role));
             }
 
             // Credentials are invalid, or account doesn't exist
             return await Task.FromResult<ClaimsIdentity>(null);
         }
-
-        //-----------------------------------
 
         [HttpGet]
         [AllowAnonymous]
@@ -260,9 +229,7 @@ namespace JobFinder.WebApi.Controllers
 
         [HttpGet]
         //[AllowAnonymous]
-        [Authorize(Policy = "ApiUser")]
-        //[Authorize(Policy = "AdminUser")]
-       //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "Person")]
         public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;

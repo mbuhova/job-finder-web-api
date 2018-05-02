@@ -27,8 +27,8 @@ namespace JobFinder.WebApi.Extensions
                  new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
-                 identity.FindFirst(JwtClaimIdentifiers.Rol),
-                 identity.FindFirst(JwtClaimIdentifiers.Id)
+                 identity.FindFirst(JwtClaimIdentifiers.Id),
+                 identity.FindFirst(JwtClaimIdentifiers.Role)
              };
 
             // Create the JWT security token and encode it.
@@ -45,12 +45,12 @@ namespace JobFinder.WebApi.Extensions
             return encodedJwt;
         }
 
-        public ClaimsIdentity GenerateClaimsIdentity(string userName, string id)
+        public ClaimsIdentity GenerateClaimsIdentity(string userName, string id, string role)
         {
             return new ClaimsIdentity(new GenericIdentity(userName, "Token"), new[]
             {
                 new Claim(JwtClaimIdentifiers.Id, id),
-                new Claim(JwtClaimIdentifiers.Rol, JwtClaimIdentifiers.ApiAccess)
+                new Claim(JwtClaimIdentifiers.Role, role)
             });
         }
 

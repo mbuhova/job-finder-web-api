@@ -7,11 +7,8 @@ namespace JobFinder.WebApi.Extensions
 {
     public static class JwtClaimIdentifiers
     {
-        public static readonly string Id = "1";
-
-        public static readonly string Rol = "Admin";
-
-        //----- JwtClaims
-        public static readonly string ApiAccess = "123";
+        public static readonly string Id = "UserId";
+        
+        public static readonly string Role = "Role";
     }
 }

@@ -47,11 +47,6 @@ namespace JobFinder.WebApi
                 options.SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
             });
 
-            //-------------------------------------------------------------
-
-
-
-
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -68,20 +63,13 @@ namespace JobFinder.WebApi
                 ClockSkew = TimeSpan.Zero
             };
 
-          
-
-            //--------------------------------------------------------------
-
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
-
-
-
+            
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -96,9 +84,9 @@ namespace JobFinder.WebApi
             // api user claim policy
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ApiUser", policy => policy.RequireClaim(JwtClaimIdentifiers.Rol, JwtClaimIdentifiers.ApiAccess));
-                options.AddPolicy("AdminUser", policy => policy.RequireRole("Admin"));
-                //Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess
+                options.AddPolicy("Admin", policy => policy.RequireClaim(JwtClaimIdentifiers.Role, "Admin"));
+                options.AddPolicy("Person", policy => policy.RequireClaim(JwtClaimIdentifiers.Role, "Person"));
+                options.AddPolicy("Company", policy => policy.RequireClaim(JwtClaimIdentifiers.Role, "Company"));
             });
 
             // Add application services.
