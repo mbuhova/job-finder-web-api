@@ -16,13 +16,19 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using JobFinder.WebApi.Extensions;
 using System.Text;
+using JobFinder.Repositories;
+using JobFinder.Services.Contracts;
+using JobFinder.Services.Implementations;
+using AutoMapper;
+using JobFinder.ViewModels;
 
 namespace JobFinder.WebApi
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         static string secretKey = "mysupersecret_secretkey!123";
-        //private SecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
         private SecurityKey _signingKey;
 
         public Startup(IConfiguration configuration)
@@ -30,9 +36,7 @@ namespace JobFinder.WebApi
             Configuration = configuration;
             _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
         }
-
-        public IConfiguration Configuration { get; }
-
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -65,6 +69,12 @@ namespace JobFinder.WebApi
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            this.ConfigureMappings(services);
+
+            this.ConfigureRepositories(services);
+
+            this.ConfigureApplicationServices(services);
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -122,6 +132,44 @@ namespace JobFinder.WebApi
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+
+        private void ConfigureRepositories(IServiceCollection services)
+        {
+            services.AddScoped<ITownRepository, TownRepository>();
+            services.AddScoped<IBusinessSectorRepository, BusinessSectorRepository>();
+        }
+
+        private void ConfigureApplicationServices(IServiceCollection services)
+        {
+            services.AddScoped<IOfferService, OfferService>();
+        }
+
+        private void ConfigureMappings(IServiceCollection services)
+        {
+            Mapper.Initialize(cfg =>
+            {
+                 cfg.CreateMap<Town, TownViewModel>().ReverseMap();
+                 cfg.CreateMap<BusinessSector, BusinessSectorViewModel>().ReverseMap();
+                /*cfg.CreateMap<Order, OrderViewModel>()
+                    .ForMember(dest => dest.DeliveryTime, opts => opts.MapFrom(src => src.Deliveries.OrderBy(o => o.DeliveryId).Select(s => s.DeliveryTime).FirstOrDefault()));
+                cfg.CreateMap<Delivery, DeliveryViewModel>()
+                    .ForMember(dest => dest.OrderDate, opts => opts.MapFrom(src => src.Order.DeliveryDate))
+                    .ForMember(dest => dest.TypeName, opts => opts.MapFrom(src => src.Order.Type.Description))
+                    .ForMember(dest => dest.TypeId, opts => opts.MapFrom(src => src.Order.TypeId))
+                    .ForMember(dest => dest.Latitude, opts => opts.MapFrom(src => src.Place.Latitude))
+                    .ForMember(dest => dest.Longitude, opts => opts.MapFrom(src => src.Place.Longitude))
+                    .ForMember(dest => dest.Status, opts => opts.MapFrom(src => src.Index.Description))
+                    .ReverseMap();
+                cfg.CreateMap<Delivery, DeliveredAmountViewModel>()
+                    .ForMember(dest => dest.Unit, opts => opts.MapFrom(src => src.Order.Type.Unit))
+                    .ForMember(dest => dest.Description, opts => opts.MapFrom(src => src.Order.Type.Category.Description))
+                    .ForMember(dest => dest.CategoryId, opts => opts.MapFrom(src => src.Order.Type.CategoryId))
+                    .ForMember(dest => dest.ProducedAmount, opts => opts.MapFrom(src => src.Order.ProducedAmount))
+                    .ReverseMap();
+                cfg.CreateMap<ConstructionPlace, ConstructionPlaceViewModel>().ReverseMap();
+                cfg.CreateMap<Place, PlaceViewModel>().ReverseMap();*/
             });
         }
     }
