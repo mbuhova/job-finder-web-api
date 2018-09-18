@@ -75,7 +75,7 @@ namespace JobFinder.WebApi.Controllers
             var identity = await GetClaimsIdentity(model.Email, model.Password);
             if (identity == null)
             {
-                return BadRequest("Invalid email or password!");
+                return BadRequest("Invalid email address or password!");
             }
             string role = identity.Claims.Where(x => x.Type == "Role").FirstOrDefault().Value;
             var token = await _jwtFactory.GenerateEncodedToken(model.Email, identity);
