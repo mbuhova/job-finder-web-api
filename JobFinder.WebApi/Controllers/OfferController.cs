@@ -27,5 +27,20 @@ namespace JobFinder.WebApi.Controllers
         {
             return this._offerService.GetSearchCriteria();
         }
+
+        [HttpGet("searchOffers")]
+        [AllowAnonymous]
+        public IQueryable<SearchResultOfferViewModel> SearchOffers(
+            string keyword, 
+            int[] selectedBusinessSectors, 
+            int[] selectedTowns,
+            bool isPermanent,
+            bool isTemporary,
+            bool isFullTime,
+            bool isPartTime)
+        {
+            return this._offerService.SearchOffers(keyword, selectedBusinessSectors,
+            selectedTowns, isPermanent, isTemporary, isFullTime, isPartTime);
+        }
     }
 }

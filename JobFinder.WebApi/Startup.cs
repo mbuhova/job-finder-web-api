@@ -139,6 +139,7 @@ namespace JobFinder.WebApi
         {
             services.AddScoped<ITownRepository, TownRepository>();
             services.AddScoped<IBusinessSectorRepository, BusinessSectorRepository>();
+            services.AddScoped<IJobOfferRepository, JobOfferRepository>();
         }
 
         private void ConfigureApplicationServices(IServiceCollection services)
@@ -152,6 +153,11 @@ namespace JobFinder.WebApi
             {
                  cfg.CreateMap<Town, TownViewModel>().ReverseMap();
                  cfg.CreateMap<BusinessSector, BusinessSectorViewModel>().ReverseMap();
+                 cfg.CreateMap<JobOffer, SearchResultOfferViewModel>()
+                    .ForMember(dest => dest.Town, opts => opts.MapFrom(src => src.Town.Name))
+                    .ForMember(dest => dest.BusinessSector, opts => opts.MapFrom(src => src.BusinessSector.Name))
+                    .ForMember(dest => dest.CompanyName, opts => opts.MapFrom(src => src.Company.CompanyName))
+                    .ReverseMap();
                 /*cfg.CreateMap<Order, OrderViewModel>()
                     .ForMember(dest => dest.DeliveryTime, opts => opts.MapFrom(src => src.Deliveries.OrderBy(o => o.DeliveryId).Select(s => s.DeliveryTime).FirstOrDefault()));
                 cfg.CreateMap<Delivery, DeliveryViewModel>()
