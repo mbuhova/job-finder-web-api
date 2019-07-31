@@ -103,6 +103,10 @@ namespace JobFinder.WebApi
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IJwtFactory, JwtFactory>();
 
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+            });
             services.AddMvc();
         }
 
