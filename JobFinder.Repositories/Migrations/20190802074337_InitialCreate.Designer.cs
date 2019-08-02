@@ -6,13 +6,12 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
-using Microsoft.EntityFrameworkCore.ValueGeneration;
 using System;
 
 namespace JobFinder.Repositories.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180501091643_InitialCreate")]
+    [Migration("20190802074337_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +21,7 @@ namespace JobFinder.Repositories.Migrations
                 .HasAnnotation("ProductVersion", "2.0.2-rtm-10011")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.Application", b =>
+            modelBuilder.Entity("JobFinder.Models.Application", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -42,8 +41,7 @@ namespace JobFinder.Repositories.Migrations
 
                     b.Property<int>("JobOfferId");
 
-                    b.Property<string>("PersonId")
-                        .IsRequired();
+                    b.Property<string>("PersonId");
 
                     b.HasKey("Id");
 
@@ -54,23 +52,36 @@ namespace JobFinder.Repositories.Migrations
                     b.ToTable("Applications");
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.ApplicationUser", b =>
+            modelBuilder.Entity("JobFinder.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AboutUs");
+
                     b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("Address");
+
+                    b.Property<string>("Bulstat")
+                        .HasMaxLength(13);
+
+                    b.Property<string>("CompanyName")
+                        .HasMaxLength(60);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
 
                     b.Property<string>("Email")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<bool>("IsApproved");
+
+                    b.Property<string>("LastName");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -90,12 +101,24 @@ namespace JobFinder.Repositories.Migrations
 
                     b.Property<string>("SecurityStamp");
 
+                    b.Property<int?>("TownId");
+
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
+                    b.Property<string>("WebSite");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Bulstat")
+                        .IsUnique()
+                        .HasFilter("[Bulstat] IS NOT NULL");
+
+                    b.HasIndex("CompanyName")
+                        .IsUnique()
+                        .HasFilter("[CompanyName] IS NOT NULL");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -105,12 +128,12 @@ namespace JobFinder.Repositories.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers");
+                    b.HasIndex("TownId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
+                    b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.BusinessSector", b =>
+            modelBuilder.Entity("JobFinder.Models.BusinessSector", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -129,7 +152,7 @@ namespace JobFinder.Repositories.Migrations
                     b.ToTable("BusinessSectors");
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.JobOffer", b =>
+            modelBuilder.Entity("JobFinder.Models.JobOffer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -169,33 +192,41 @@ namespace JobFinder.Repositories.Migrations
                     b.ToTable("JobOffers");
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.PersonOffer", b =>
+            modelBuilder.Entity("JobFinder.Models.PersonOffer", b =>
                 {
                     b.Property<string>("PersonId");
 
                     b.Property<int>("JobOfferId");
 
+                    b.Property<int>("Id");
+
                     b.HasKey("PersonId", "JobOfferId");
+
+                    b.HasAlternateKey("Id");
 
                     b.HasIndex("JobOfferId");
 
                     b.ToTable("PersonOffer");
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.SectorCompany", b =>
+            modelBuilder.Entity("JobFinder.Models.SectorCompany", b =>
                 {
                     b.Property<int>("BusinessSectorId");
 
                     b.Property<string>("CompanyId");
 
+                    b.Property<int>("Id");
+
                     b.HasKey("BusinessSectorId", "CompanyId");
+
+                    b.HasAlternateKey("Id");
 
                     b.HasIndex("CompanyId");
 
                     b.ToTable("SectorCompany");
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.Town", b =>
+            modelBuilder.Entity("JobFinder.Models.Town", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -322,105 +353,63 @@ namespace JobFinder.Repositories.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.Company", b =>
+            modelBuilder.Entity("JobFinder.Models.Application", b =>
                 {
-                    b.HasBaseType("JobFinder.WebApi.Models.ApplicationUser");
-
-                    b.Property<string>("AboutUs");
-
-                    b.Property<string>("Address");
-
-                    b.Property<string>("Bulstat")
-                        .IsRequired()
-                        .HasMaxLength(13);
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasMaxLength(60);
-
-                    b.Property<bool>("IsApproved");
-
-                    b.Property<string>("WebSite");
-
-                    b.HasIndex("Bulstat")
-                        .IsUnique()
-                        .HasFilter("[Bulstat] IS NOT NULL");
-
-                    b.HasIndex("CompanyName")
-                        .IsUnique()
-                        .HasFilter("[CompanyName] IS NOT NULL");
-
-                    b.ToTable("Companies");
-
-                    b.HasDiscriminator().HasValue("Company");
-                });
-
-            modelBuilder.Entity("JobFinder.WebApi.Models.Person", b =>
-                {
-                    b.HasBaseType("JobFinder.WebApi.Models.ApplicationUser");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired();
-
-                    b.Property<string>("LastName")
-                        .IsRequired();
-
-                    b.ToTable("People");
-
-                    b.HasDiscriminator().HasValue("Person");
-                });
-
-            modelBuilder.Entity("JobFinder.WebApi.Models.Application", b =>
-                {
-                    b.HasOne("JobFinder.WebApi.Models.JobOffer", "JobOffer")
+                    b.HasOne("JobFinder.Models.JobOffer", "JobOffer")
                         .WithMany("Applications")
                         .HasForeignKey("JobOfferId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("JobFinder.WebApi.Models.Person", "Person")
+                    b.HasOne("JobFinder.Models.ApplicationUser", "Person")
                         .WithMany("Applications")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PersonId");
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.JobOffer", b =>
+            modelBuilder.Entity("JobFinder.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("JobFinder.WebApi.Models.BusinessSector", "BusinessSector")
+                    b.HasOne("JobFinder.Models.Town", "Town")
+                        .WithMany()
+                        .HasForeignKey("TownId");
+                });
+
+            modelBuilder.Entity("JobFinder.Models.JobOffer", b =>
+                {
+                    b.HasOne("JobFinder.Models.BusinessSector", "BusinessSector")
                         .WithMany()
                         .HasForeignKey("BusinessSectorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("JobFinder.WebApi.Models.Company", "Company")
+                    b.HasOne("JobFinder.Models.ApplicationUser", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("JobFinder.WebApi.Models.Town", "Town")
+                    b.HasOne("JobFinder.Models.Town", "Town")
                         .WithMany("JobOffers")
                         .HasForeignKey("TownId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.PersonOffer", b =>
+            modelBuilder.Entity("JobFinder.Models.PersonOffer", b =>
                 {
-                    b.HasOne("JobFinder.WebApi.Models.JobOffer", "JobOffer")
+                    b.HasOne("JobFinder.Models.JobOffer", "JobOffer")
                         .WithMany("PeopleFollowing")
                         .HasForeignKey("JobOfferId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("JobFinder.WebApi.Models.Person", "Person")
+                    b.HasOne("JobFinder.Models.ApplicationUser", "Person")
                         .WithMany("FollowedOffers")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("JobFinder.WebApi.Models.SectorCompany", b =>
+            modelBuilder.Entity("JobFinder.Models.SectorCompany", b =>
                 {
-                    b.HasOne("JobFinder.WebApi.Models.BusinessSector", "BusinessSector")
+                    b.HasOne("JobFinder.Models.BusinessSector", "BusinessSector")
                         .WithMany("Companies")
                         .HasForeignKey("BusinessSectorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("JobFinder.WebApi.Models.Company", "Company")
+                    b.HasOne("JobFinder.Models.ApplicationUser", "Company")
                         .WithMany("BusinessSectors")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -436,7 +425,7 @@ namespace JobFinder.Repositories.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("JobFinder.WebApi.Models.ApplicationUser")
+                    b.HasOne("JobFinder.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -444,7 +433,7 @@ namespace JobFinder.Repositories.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("JobFinder.WebApi.Models.ApplicationUser")
+                    b.HasOne("JobFinder.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -457,7 +446,7 @@ namespace JobFinder.Repositories.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("JobFinder.WebApi.Models.ApplicationUser")
+                    b.HasOne("JobFinder.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -465,7 +454,7 @@ namespace JobFinder.Repositories.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("JobFinder.WebApi.Models.ApplicationUser")
+                    b.HasOne("JobFinder.Models.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

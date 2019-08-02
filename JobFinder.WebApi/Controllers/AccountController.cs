@@ -270,6 +270,34 @@ namespace JobFinder.WebApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterCompany([FromBody]RegisterCompanyViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User created a new account with password.");
+
+                    ApplicationUser createdUser = await _userManager.FindByEmailAsync(user.Email);
+                    createdUser.Bulstat = model.Bulstat;
+                    createdUser.TownId = model.TownId;
+                    createdUser.IsApproved = false;
+                    await _userManager.UpdateAsync(createdUser);
+                    await _userManager.AddToRoleAsync(createdUser, "Company");
+                    return Ok();
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {

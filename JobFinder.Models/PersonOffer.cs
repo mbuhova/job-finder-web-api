@@ -12,7 +12,7 @@ namespace JobFinder.Models
         [Key]
         public int Id { get; set; }
         public string PersonId { get; set; }
-        public Person Person { get; set; }
+        public ApplicationUser Person { get; set; }
         public int JobOfferId { get; set; }
         public JobOffer JobOffer { get; set; }
     }

@@ -63,7 +63,7 @@
             if (!context.Users.Any())
             {
                 var admin = new ApplicationUser() { Email = "admin@admin.bg", UserName = "admin@admin.bg" };
-                var company = new Company() { Email = "company@company.bg", UserName = "company@company.bg", Bulstat = "1234567891234", IsApproved = true };
+                var company = new ApplicationUser() { Email = "company@company.bg", UserName = "company@company.bg", Bulstat = "1234567891234", IsApproved = true };
                 var person = new ApplicationUser() { Email = "person@person.bg", UserName = "person@person.bg" };
 
                 userManager.CreateAsync(admin, "Admin@123").Wait();

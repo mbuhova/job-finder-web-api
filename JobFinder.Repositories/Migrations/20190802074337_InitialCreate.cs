@@ -24,40 +24,6 @@ namespace JobFinder.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    Discriminator = table.Column<string>(nullable: false),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    AboutUs = table.Column<string>(nullable: true),
-                    Address = table.Column<string>(nullable: true),
-                    Bulstat = table.Column<string>(maxLength: 13, nullable: true),
-                    CompanyName = table.Column<string>(maxLength: 60, nullable: true),
-                    IsApproved = table.Column<bool>(nullable: true),
-                    WebSite = table.Column<string>(nullable: true),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BusinessSectors",
                 columns: table => new
                 {
@@ -104,6 +70,46 @@ namespace JobFinder.Repositories.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    AboutUs = table.Column<string>(nullable: true),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Address = table.Column<string>(nullable: true),
+                    Bulstat = table.Column<string>(maxLength: 13, nullable: true),
+                    CompanyName = table.Column<string>(maxLength: 60, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    IsApproved = table.Column<bool>(nullable: false),
+                    LastName = table.Column<string>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    TownId = table.Column<int>(nullable: true),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    WebSite = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Towns_TownId",
+                        column: x => x.TownId,
+                        principalTable: "Towns",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -192,30 +198,6 @@ namespace JobFinder.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SectorCompany",
-                columns: table => new
-                {
-                    BusinessSectorId = table.Column<int>(nullable: false),
-                    CompanyId = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SectorCompany", x => new { x.BusinessSectorId, x.CompanyId });
-                    table.ForeignKey(
-                        name: "FK_SectorCompany_BusinessSectors_BusinessSectorId",
-                        column: x => x.BusinessSectorId,
-                        principalTable: "BusinessSectors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SectorCompany_AspNetUsers_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "JobOffers",
                 columns: table => new
                 {
@@ -257,6 +239,32 @@ namespace JobFinder.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SectorCompany",
+                columns: table => new
+                {
+                    BusinessSectorId = table.Column<int>(nullable: false),
+                    CompanyId = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SectorCompany", x => new { x.BusinessSectorId, x.CompanyId });
+                    table.UniqueConstraint("AK_SectorCompany_Id", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SectorCompany_BusinessSectors_BusinessSectorId",
+                        column: x => x.BusinessSectorId,
+                        principalTable: "BusinessSectors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SectorCompany_AspNetUsers_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Applications",
                 columns: table => new
                 {
@@ -269,7 +277,7 @@ namespace JobFinder.Repositories.Migrations
                     FileSize = table.Column<long>(nullable: false),
                     IsApproved = table.Column<bool>(nullable: true),
                     JobOfferId = table.Column<int>(nullable: false),
-                    PersonId = table.Column<string>(nullable: false)
+                    PersonId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -285,7 +293,7 @@ namespace JobFinder.Repositories.Migrations
                         column: x => x.PersonId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -293,11 +301,13 @@ namespace JobFinder.Repositories.Migrations
                 columns: table => new
                 {
                     PersonId = table.Column<string>(nullable: false),
-                    JobOfferId = table.Column<int>(nullable: false)
+                    JobOfferId = table.Column<int>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PersonOffer", x => new { x.PersonId, x.JobOfferId });
+                    table.UniqueConstraint("AK_PersonOffer_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PersonOffer_JobOffers_JobOfferId",
                         column: x => x.JobOfferId,
@@ -350,18 +360,6 @@ namespace JobFinder.Repositories.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_Bulstat",
                 table: "AspNetUsers",
                 column: "Bulstat",
@@ -374,6 +372,23 @@ namespace JobFinder.Repositories.Migrations
                 column: "CompanyName",
                 unique: true,
                 filter: "[CompanyName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_TownId",
+                table: "AspNetUsers",
+                column: "TownId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BusinessSectors_Name",

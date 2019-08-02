@@ -17,10 +17,6 @@ namespace JobFinder.Repositories.Data
 
         public virtual DbSet<BusinessSector> BusinessSectors { get; set; }
 
-        public virtual DbSet<Person> People { get; set; }
-
-        public virtual DbSet<Company> Companies { get; set; }
-
         public virtual DbSet<Application> Applications { get; set; }
 
         public virtual DbSet<JobOffer> JobOffers { get; set; }
@@ -56,17 +52,17 @@ namespace JobFinder.Repositories.Data
                 .WithMany(e => e.PeopleFollowing)
                 .HasForeignKey(x => x.JobOfferId);
 
-            builder.Entity<Company>()
+            builder.Entity<ApplicationUser>()
             .HasIndex(u => u.Bulstat)
             .IsUnique();
 
-            builder.Entity<Company>()
+            builder.Entity<ApplicationUser>()
            .HasIndex(u => u.CompanyName)
            .IsUnique();
 
-           // builder.Entity<ApplicationUser>()
-           //.HasIndex(u => u.Email)
-           //.IsUnique();
+            // builder.Entity<ApplicationUser>()
+            //.HasIndex(u => u.Email)
+            //.IsUnique();
 
             builder.Entity<Town>()
            .HasIndex(u => u.Name)

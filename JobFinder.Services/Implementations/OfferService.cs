@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using AutoMapper.QueryableExtensions;
 using System.Linq;
+using JobFinder.Models;
 
 namespace JobFinder.Services.Implementations
 {
@@ -70,6 +71,22 @@ namespace JobFinder.Services.Implementations
             }
 
             return result.OrderByDescending(o => o.DateCreated).ProjectTo<SearchResultOfferViewModel>();
+        }
+
+        public void Add(CreateOfferViewModel model, string companyId)
+        {
+            JobOffer offer = new JobOffer();
+            offer.Title = model.Title;
+            offer.Description = model.Description;
+            offer.DateCreated = DateTime.Now;
+            offer.TownId = model.TownId;
+            offer.IsActive = true;
+            offer.CompanyId = companyId;
+            offer.BusinessSectorId = model.BusinessSectorId;
+            offer.IsPermanent = model.IsPermanent;
+            offer.IsFullTime = model.IsFullTime;
+            _jobOfferRepository.Add(offer);
+            _jobOfferRepository.SaveChanges();
         }
     }
 }

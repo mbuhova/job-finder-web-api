@@ -14,6 +14,6 @@ namespace JobFinder.Models
         public int BusinessSectorId { get; set; }
         public BusinessSector BusinessSector { get; set; }
         public string CompanyId { get; set; }
-        public Company Company { get; set; }
+        public ApplicationUser Company { get; set; }
     }
 }

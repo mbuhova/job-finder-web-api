@@ -16,5 +16,7 @@ namespace JobFinder.Services.Contracts
             bool isTemporary,
             bool isFullTime,
             bool isPartTime);
+
+        void Add(CreateOfferViewModel offer, string companyId);
     }
 }

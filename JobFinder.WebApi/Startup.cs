@@ -144,11 +144,13 @@ namespace JobFinder.WebApi
             services.AddScoped<ITownRepository, TownRepository>();
             services.AddScoped<IBusinessSectorRepository, BusinessSectorRepository>();
             services.AddScoped<IJobOfferRepository, JobOfferRepository>();
+            services.AddScoped<IApplicationRepository, ApplicationRepository>();
         }
 
         private void ConfigureApplicationServices(IServiceCollection services)
         {
             services.AddScoped<IOfferService, OfferService>();
+            services.AddScoped<IApplicationService, ApplicationService>();
         }
 
         private void ConfigureMappings(IServiceCollection services)
