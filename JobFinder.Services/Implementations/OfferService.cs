@@ -65,12 +65,20 @@ namespace JobFinder.Services.Implementations
                 result = result.Where(o => o.IsFullTime == true);
             }
 
-            if (keyword != string.Empty)
+            if (keyword != null && keyword != string.Empty)
             {
                 result = result.Where(o => o.Title.Contains(keyword) || o.Description.Contains(keyword));
             }
-
+            
             return result.OrderByDescending(o => o.DateCreated).ProjectTo<SearchResultOfferViewModel>();
+        }
+
+        public IQueryable<JobOffer> GetCompanyOffers(string companyId)
+        {
+            return this._jobOfferRepository
+                .All()
+                .Where(o => o.CompanyId == companyId)
+                .OrderByDescending(o => o.DateCreated);
         }
 
         public void Add(CreateOfferViewModel model, string companyId)

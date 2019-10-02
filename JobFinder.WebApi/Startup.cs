@@ -63,8 +63,8 @@ namespace JobFinder.WebApi
                 IssuerSigningKey = _signingKey,
 
                 RequireExpirationTime = false,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
+                //ValidateLifetime = true,
+                //ClockSkew = TimeSpan.Zero
             };
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -98,7 +98,7 @@ namespace JobFinder.WebApi
                 options.AddPolicy("Person", policy => policy.RequireClaim(JwtClaimIdentifiers.Role, "Person"));
                 options.AddPolicy("Company", policy => policy.RequireClaim(JwtClaimIdentifiers.Role, "Company"));
             });
-
+           
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<IJwtFactory, JwtFactory>();
@@ -127,6 +127,8 @@ namespace JobFinder.WebApi
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            //app.UseJwtTokenMiddleware();
 
             app.UseCors(builder =>
                     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());

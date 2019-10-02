@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JobFinder.Models;
 using JobFinder.ViewModels;
 
 namespace JobFinder.Services.Contracts
@@ -16,6 +17,8 @@ namespace JobFinder.Services.Contracts
             bool isTemporary,
             bool isFullTime,
             bool isPartTime);
+
+        IQueryable<JobOffer> GetCompanyOffers(string companyId);
 
         void Add(CreateOfferViewModel offer, string companyId);
     }

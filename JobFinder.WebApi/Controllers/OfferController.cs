@@ -50,18 +50,25 @@ namespace JobFinder.WebApi.Controllers
             selectedTowns, isPermanent, isTemporary, isFullTime, isPartTime);
         }
 
-        [HttpPost]
+        [HttpPost("createOffer")]
         [Authorize(Policy = "Company")]
-        public ActionResult CreateOffer(CreateOfferViewModel model)
+        public ActionResult CreateOffer([FromBody]CreateOfferViewModel model)
         {
             if (ModelState.IsValid)
             {
-                string companyId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                string companyId = User.Claims.Where(x => x.Type == "UserId").FirstOrDefault().Value;
                 _offerService.Add(model, companyId);
-                return Ok();
+                return Ok("Job offer is successfully created.");
             }
 
             return BadRequest(model);
+        }
+        [HttpGet("myOffers")]
+        [Authorize(Policy = "Company")]
+        public IQueryable<JobOffer> GetMyOffers()
+        {
+            string companyId = User.Claims.Where(x => x.Type == "UserId").FirstOrDefault().Value;
+           return _offerService.GetCompanyOffers(companyId);
         }
     }
 }
