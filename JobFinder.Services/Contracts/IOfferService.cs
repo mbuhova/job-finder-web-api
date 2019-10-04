@@ -20,6 +20,8 @@ namespace JobFinder.Services.Contracts
 
         IQueryable<JobOffer> GetCompanyOffers(string companyId);
 
+        JobOffer GetOfferById(int offerId);
+
         void Add(CreateOfferViewModel offer, string companyId);
     }
 }

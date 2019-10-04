@@ -81,6 +81,11 @@ namespace JobFinder.Services.Implementations
                 .OrderByDescending(o => o.DateCreated);
         }
 
+        public JobOffer GetOfferById(int offerId)
+        {
+           return this._jobOfferRepository.GetById(offerId);
+        }
+
         public void Add(CreateOfferViewModel model, string companyId)
         {
             JobOffer offer = new JobOffer();
